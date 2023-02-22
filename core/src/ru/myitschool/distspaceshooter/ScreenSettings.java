@@ -9,18 +9,21 @@ import com.badlogic.gdx.graphics.Texture;
 
 public class ScreenSettings implements Screen {
     MyGG gg;
-
     Texture imgBG;
-
-    TextButton btnPlay, btnSettings, btnAbout, btnExit;
+    TextButton btnEnterName, btnSound, btnMusic, btnClearTable, btnBack;
+    boolean enterPlayerName;
+    InputKeyboard keyboard;
+    String playerName = "Noname";
 
     public ScreenSettings(MyGG myGG){
         gg = myGG;
-        btnPlay = new TextButton(gg.fontLarge, "PLAY", 500, 600);
-        btnSettings = new TextButton(gg.fontLarge, "SETTINGS", 500, 500);
-        btnAbout = new TextButton(gg.fontLarge, "ABOUT", 500, 400);
-        btnExit = new TextButton(gg.fontLarge, "EXIT", 500, 300);
-        imgBG = new Texture("stars.png");
+        btnEnterName = new TextButton(gg.fontLarge, "NAME: "+playerName, 100, 600);
+        btnSound = new TextButton(gg.fontLarge, "SOUND ON", 100, 500);
+        btnMusic = new TextButton(gg.fontLarge, "MUSIC ON", 100, 400);
+        btnClearTable = new TextButton(gg.fontLarge, "CLEAR RECORDS", 100, 300);
+        btnBack = new TextButton(gg.fontLarge, "BACK", 100, 200);
+        imgBG = new Texture("bg/space02.jpg");
+        keyboard = new InputKeyboard(SCR_WIDTH, SCR_HEIGHT, 7);
     }
 
     @Override
@@ -30,33 +33,53 @@ public class ScreenSettings implements Screen {
 
     @Override
     public void render(float delta) {
-// обработка касаний
+        // обработка касаний
         if(Gdx.input.justTouched()) {
             gg.touch.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             gg.camera.unproject(gg.touch);
-            if(btnPlay.hit(gg.touch.x, gg.touch.y)){
-                gg.setScreen(gg.screenGame);
-            }
-            if(btnSettings.hit(gg.touch.x, gg.touch.y)){
-                gg.setScreen(gg.screenSettings);
-            }
-            if(btnAbout.hit(gg.touch.x, gg.touch.y)){
-                gg.setScreen(gg.screenAbout);
-            }
-            if(btnExit.hit(gg.touch.x, gg.touch.y)){
-                Gdx.app.exit();
+            if(enterPlayerName) {
+                if(keyboard.endOfEdit(gg.touch.x, gg.touch.y)) {
+                    enterPlayerName = false;
+                    playerName = keyboard.getText();
+                    btnEnterName.text = "NAME: "+playerName;
+                }
+            } else {
+                if (btnEnterName.hit(gg.touch.x, gg.touch.y)) {
+                    enterPlayerName = true;
+                }
+                if (btnSound.hit(gg.touch.x, gg.touch.y)) {
+                    gg.soundOn = !gg.soundOn;
+                    btnSound.setText(gg.soundOn ? "SOUND ON" : "SOUND OFF");
+                }
+                if (btnMusic.hit(gg.touch.x, gg.touch.y)) {
+                    gg.musicOn = !gg.musicOn;
+                    btnMusic.setText(gg.musicOn ? "MUSIC ON" : "MUSIC OFF");
+                }
+                if(btnClearTable.hit(gg.touch.x, gg.touch.y)){
+                    btnClearTable.text = "RECORDS CLEARED";
+                }
+                if (btnBack.hit(gg.touch.x, gg.touch.y)) {
+                    gg.setScreen(gg.screenIntro);
+                    btnClearTable.text = "CLEAR RECORDS";
+                }
             }
         }
+
+        // игровые события
 
         // отрисовка графики
         gg.camera.update();
         gg.batch.setProjectionMatrix(gg.camera.combined);
         gg.batch.begin();
         gg.batch.draw(imgBG, 0, 0, SCR_WIDTH, SCR_HEIGHT);
-        btnPlay.font.draw(gg.batch, btnPlay.text, btnPlay.x, btnPlay.y);
-        btnSettings.font.draw(gg.batch, btnSettings.text, btnSettings.x, btnSettings.y);
-        btnAbout.font.draw(gg.batch, btnAbout.text, btnAbout.x, btnAbout.y);
-        btnExit.font.draw(gg.batch, btnExit.text, btnExit.x, btnExit.y);
+        btnEnterName.font.draw(gg.batch, btnEnterName.text, btnEnterName.x, btnEnterName.y);
+        btnSound.font.draw(gg.batch, btnSound.text, btnSound.x, btnSound.y);
+        btnMusic.font.draw(gg.batch, btnMusic.text, btnMusic.x, btnMusic.y);
+        btnClearTable.font.draw(gg.batch, btnClearTable.text, btnClearTable.x, btnClearTable.y);
+        btnBack.font.draw(gg.batch, btnBack.text, btnBack.x, btnBack.y);
+        if(enterPlayerName){
+            keyboard.draw(gg.batch);
+        }
         gg.batch.end();
     }
 
@@ -83,5 +106,6 @@ public class ScreenSettings implements Screen {
     @Override
     public void dispose() {
         imgBG.dispose();
+        keyboard.dispose();
     }
 }
