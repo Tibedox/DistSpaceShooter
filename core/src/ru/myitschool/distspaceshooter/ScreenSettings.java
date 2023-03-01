@@ -22,8 +22,10 @@ public class ScreenSettings implements Screen {
         btnMusic = new TextButton(gg.fontLarge, "MUSIC ON", 100, 400);
         btnClearTable = new TextButton(gg.fontLarge, "CLEAR RECORDS", 100, 300);
         btnBack = new TextButton(gg.fontLarge, "BACK", 100, 200);
+
         imgBG = new Texture("bg/space02.jpg");
-        keyboard = new InputKeyboard(SCR_WIDTH, SCR_HEIGHT, 7);
+
+        keyboard = new InputKeyboard(SCR_WIDTH, SCR_HEIGHT/2f, 7);
     }
 
     @Override

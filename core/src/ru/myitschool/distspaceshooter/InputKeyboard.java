@@ -216,7 +216,7 @@ public class InputKeyboard {
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal(fontName));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.color = new Color(1, 1, 1, 1);
-        parameter.size = 50;
+        parameter.size = width>720 ? 50 : 30;
         parameter.borderColor = Color.BLACK;
         parameter.borderWidth = 1;
         parameter.borderStraight = true;

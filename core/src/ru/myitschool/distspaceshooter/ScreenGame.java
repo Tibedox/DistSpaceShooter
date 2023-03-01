@@ -10,17 +10,17 @@ import com.badlogic.gdx.graphics.Texture;
 public class ScreenGame implements Screen {
     MyGG gg;
 
-    Texture imgBG;
+    Texture imgStars;
 
-    TextButton btnPlay, btnSettings, btnAbout, btnExit;
+    Stars[] stars = new Stars[2];
 
     public ScreenGame(MyGG myGG){
         gg = myGG;
-        btnPlay = new TextButton(gg.fontLarge, "PLAY", 500, 600);
-        btnSettings = new TextButton(gg.fontLarge, "SETTINGS", 500, 500);
-        btnAbout = new TextButton(gg.fontLarge, "ABOUT", 500, 400);
-        btnExit = new TextButton(gg.fontLarge, "EXIT", 500, 300);
-        imgBG = new Texture("stars.png");
+
+        imgStars = new Texture("stars.png");
+
+        stars[0] = new Stars(SCR_WIDTH/2f, SCR_HEIGHT/2f, SCR_WIDTH, SCR_HEIGHT);
+        stars[1] = new Stars(SCR_WIDTH/2f, SCR_HEIGHT*3f/2, SCR_WIDTH, SCR_HEIGHT);
     }
 
     @Override
@@ -30,33 +30,21 @@ public class ScreenGame implements Screen {
 
     @Override
     public void render(float delta) {
-// обработка касаний
+        // обработка касаний
         if(Gdx.input.justTouched()) {
             gg.touch.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             gg.camera.unproject(gg.touch);
-            if(btnPlay.hit(gg.touch.x, gg.touch.y)){
-                gg.setScreen(gg.screenGame);
-            }
-            if(btnSettings.hit(gg.touch.x, gg.touch.y)){
-                gg.setScreen(gg.screenSettings);
-            }
-            if(btnAbout.hit(gg.touch.x, gg.touch.y)){
-                gg.setScreen(gg.screenAbout);
-            }
-            if(btnExit.hit(gg.touch.x, gg.touch.y)){
-                Gdx.app.exit();
-            }
         }
+
+        // события игры
+        for (Stars s: stars) s.move();
 
         // отрисовка графики
         gg.camera.update();
         gg.batch.setProjectionMatrix(gg.camera.combined);
         gg.batch.begin();
-        gg.batch.draw(imgBG, 0, 0, SCR_WIDTH, SCR_HEIGHT);
-        btnPlay.font.draw(gg.batch, btnPlay.text, btnPlay.x, btnPlay.y);
-        btnSettings.font.draw(gg.batch, btnSettings.text, btnSettings.x, btnSettings.y);
-        btnAbout.font.draw(gg.batch, btnAbout.text, btnAbout.x, btnAbout.y);
-        btnExit.font.draw(gg.batch, btnExit.text, btnExit.x, btnExit.y);
+        for (Stars s: stars) gg.batch.draw(imgStars, s.scrX(), s.scrY(), s.width, s.height);
+
         gg.batch.end();
     }
 
@@ -82,6 +70,6 @@ public class ScreenGame implements Screen {
 
     @Override
     public void dispose() {
-        imgBG.dispose();
+        imgStars.dispose();
     }
 }
