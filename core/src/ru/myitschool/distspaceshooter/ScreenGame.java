@@ -4,11 +4,14 @@ import static ru.myitschool.distspaceshooter.MyGG.SCR_HEIGHT;
 import static ru.myitschool.distspaceshooter.MyGG.SCR_WIDTH;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 
 public class ScreenGame implements Screen {
     MyGG gg;
+
+    boolean isAccelerometerPresent;
 
     Texture imgStars;
     Texture imgShip;
@@ -18,6 +21,8 @@ public class ScreenGame implements Screen {
 
     public ScreenGame(MyGG myGG){
         gg = myGG;
+
+        isAccelerometerPresent = Gdx.input.isPeripheralAvailable(Input.Peripheral.Accelerometer);
 
         imgStars = new Texture("stars.png");
         imgShip = new Texture("ship.png");
@@ -39,6 +44,8 @@ public class ScreenGame implements Screen {
             gg.touch.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             gg.camera.unproject(gg.touch);
             ship.vx = (gg.touch.x-ship.x)/20;
+        } else if(isAccelerometerPresent) {
+            ship.vx = -Gdx.input.getAccelerometerX()*10;
         }
 
         // события игры
