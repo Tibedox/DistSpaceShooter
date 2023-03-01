@@ -12,6 +12,7 @@ public class ScreenGame implements Screen {
     MyGG gg;
 
     boolean isAccelerometerPresent;
+    boolean isGyroscopePresent;
 
     Texture imgStars;
     Texture imgShip;
@@ -23,6 +24,7 @@ public class ScreenGame implements Screen {
         gg = myGG;
 
         isAccelerometerPresent = Gdx.input.isPeripheralAvailable(Input.Peripheral.Accelerometer);
+        isGyroscopePresent = Gdx.input.isPeripheralAvailable(Input.Peripheral.Gyroscope);
 
         imgStars = new Texture("stars.png");
         imgShip = new Texture("ship.png");
@@ -44,8 +46,10 @@ public class ScreenGame implements Screen {
             gg.touch.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             gg.camera.unproject(gg.touch);
             ship.vx = (gg.touch.x-ship.x)/20;
-        } else if(isAccelerometerPresent) {
+        } /*else if(isAccelerometerPresent) {
             ship.vx = -Gdx.input.getAccelerometerX()*10;
+        }*/ else if(isGyroscopePresent) {
+            ship.vx = Gdx.input.getGyroscopeY()*10;
         }
 
         // события игры
