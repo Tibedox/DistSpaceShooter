@@ -11,16 +11,20 @@ public class ScreenGame implements Screen {
     MyGG gg;
 
     Texture imgStars;
+    Texture imgShip;
 
     Stars[] stars = new Stars[2];
+    Ship ship;
 
     public ScreenGame(MyGG myGG){
         gg = myGG;
 
         imgStars = new Texture("stars.png");
+        imgShip = new Texture("ship.png");
 
         stars[0] = new Stars(SCR_WIDTH/2f, SCR_HEIGHT/2f, SCR_WIDTH, SCR_HEIGHT);
         stars[1] = new Stars(SCR_WIDTH/2f, SCR_HEIGHT*3f/2, SCR_WIDTH, SCR_HEIGHT);
+        ship = new Ship(SCR_WIDTH/2f, 100, 100, 100);
     }
 
     @Override
@@ -31,20 +35,22 @@ public class ScreenGame implements Screen {
     @Override
     public void render(float delta) {
         // обработка касаний
-        if(Gdx.input.justTouched()) {
+        if(Gdx.input.isTouched()) {
             gg.touch.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             gg.camera.unproject(gg.touch);
+            ship.vx = (gg.touch.x-ship.x)/20;
         }
 
         // события игры
         for (Stars s: stars) s.move();
+        ship.move();
 
         // отрисовка графики
         gg.camera.update();
         gg.batch.setProjectionMatrix(gg.camera.combined);
         gg.batch.begin();
         for (Stars s: stars) gg.batch.draw(imgStars, s.scrX(), s.scrY(), s.width, s.height);
-
+        gg.batch.draw(imgShip, ship.scrX(), ship.scrY(), ship.width, ship.height);
         gg.batch.end();
     }
 
@@ -71,5 +77,6 @@ public class ScreenGame implements Screen {
     @Override
     public void dispose() {
         imgStars.dispose();
+        imgShip.dispose();
     }
 }
