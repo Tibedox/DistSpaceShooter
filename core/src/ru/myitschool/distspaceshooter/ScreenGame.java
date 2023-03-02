@@ -20,12 +20,15 @@ public class ScreenGame implements Screen {
     Texture imgStars;
     Texture imgShip;
     Texture imgEnemy;
+    Texture imgShot;
 
     Stars[] stars = new Stars[2];
     Ship ship;
     ArrayList<Enemy> enemies = new ArrayList<>();
+    ArrayList<Shot> shots = new ArrayList<>();
 
     long timeEnemyLastSpawn, timeEnemySpawnInterval = 1100;
+    long timeShotLastSpawn, timeShotSpawnInterval = 500;
 
     public ScreenGame(MyGG myGG){
         gg = myGG;
@@ -36,6 +39,7 @@ public class ScreenGame implements Screen {
         imgStars = new Texture("stars.png");
         imgShip = new Texture("ship.png");
         imgEnemy = new Texture("enemy.png");
+        imgShot = new Texture("shot.png");
 
         stars[0] = new Stars(SCR_WIDTH/2f, SCR_HEIGHT/2f, SCR_WIDTH, SCR_HEIGHT);
         stars[1] = new Stars(SCR_WIDTH/2f, SCR_HEIGHT*3f/2, SCR_WIDTH, SCR_HEIGHT);
@@ -70,6 +74,13 @@ public class ScreenGame implements Screen {
                 enemies.remove(i);
             }
         }
+        spawnShots();
+        for (int i = shots.size()-1; i >= 0; i--) {
+            shots.get(i).move();
+            if(shots.get(i).outOfScreen()) {
+                shots.remove(i);
+            }
+        }
 
         // отрисовка графики
         gg.camera.update();
@@ -77,6 +88,7 @@ public class ScreenGame implements Screen {
         gg.batch.begin();
         for (Stars s: stars) gg.batch.draw(imgStars, s.scrX(), s.scrY(), s.width, s.height);
         for (Enemy e: enemies) gg.batch.draw(imgEnemy, e.scrX(), e.scrY(), e.width, e.height);
+        for (Shot s: shots) gg.batch.draw(imgShot, s.scrX(), s.scrY(), s.width, s.height);
         gg.batch.draw(imgShip, ship.scrX(), ship.scrY(), ship.width, ship.height);
         gg.batch.end();
     }
@@ -111,6 +123,13 @@ public class ScreenGame implements Screen {
         if(timeEnemyLastSpawn + timeEnemySpawnInterval < TimeUtils.millis()){
             enemies.add(new Enemy(100, 100));
             timeEnemyLastSpawn = TimeUtils.millis();
+        }
+    }
+
+    void spawnShots(){
+        if(timeShotLastSpawn + timeShotSpawnInterval < TimeUtils.millis()){
+            shots.add(new Shot(ship.x, ship.y, 100, 100));
+            timeShotLastSpawn = TimeUtils.millis();
         }
     }
 }
