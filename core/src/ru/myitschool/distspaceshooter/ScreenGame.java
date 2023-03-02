@@ -6,6 +6,7 @@ import static ru.myitschool.distspaceshooter.MyGG.SCR_WIDTH;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.TimeUtils;
 
@@ -21,6 +22,7 @@ public class ScreenGame implements Screen {
     Texture imgShip;
     Texture imgEnemy;
     Texture imgShot;
+    Sound sndShot;
 
     Stars[] stars = new Stars[2];
     Ship ship;
@@ -40,6 +42,7 @@ public class ScreenGame implements Screen {
         imgShip = new Texture("ship.png");
         imgEnemy = new Texture("enemy.png");
         imgShot = new Texture("shot.png");
+        sndShot = Gdx.audio.newSound(Gdx.files.internal("blaster.wav"));
 
         stars[0] = new Stars(SCR_WIDTH/2f, SCR_HEIGHT/2f, SCR_WIDTH, SCR_HEIGHT);
         stars[1] = new Stars(SCR_WIDTH/2f, SCR_HEIGHT*3f/2, SCR_WIDTH, SCR_HEIGHT);
@@ -117,6 +120,8 @@ public class ScreenGame implements Screen {
     public void dispose() {
         imgStars.dispose();
         imgShip.dispose();
+        imgShot.dispose();
+        sndShot.dispose();
     }
 
     void spawnEnemyes(){
@@ -130,6 +135,7 @@ public class ScreenGame implements Screen {
         if(timeShotLastSpawn + timeShotSpawnInterval < TimeUtils.millis()){
             shots.add(new Shot(ship.x, ship.y, 100, 100));
             timeShotLastSpawn = TimeUtils.millis();
+            if(gg.soundOn) sndShot.play();
         }
     }
 }
