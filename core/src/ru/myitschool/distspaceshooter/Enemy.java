@@ -12,4 +12,8 @@ public class Enemy extends SpaceObject{
         y = MathUtils.random(SCR_HEIGHT - height, SCR_HEIGHT*2);
         vy = MathUtils.random(-6f, -3);
     }
+
+    boolean outOfScreen(){
+        return true;
+    }
 }
