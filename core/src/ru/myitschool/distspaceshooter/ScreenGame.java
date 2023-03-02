@@ -64,8 +64,11 @@ public class ScreenGame implements Screen {
         for (Stars s: stars) s.move();
         ship.move();
         spawnEnemyes();
-        for (int i = 0; i < enemies.size(); i++) {
+        for (int i = enemies.size()-1; i >= 0; i--) {
             enemies.get(i).move();
+            if(enemies.get(i).outOfScreen()) {
+                enemies.remove(i);
+            }
         }
 
         // отрисовка графики

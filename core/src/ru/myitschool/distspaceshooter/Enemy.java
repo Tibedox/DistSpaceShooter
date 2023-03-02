@@ -14,6 +14,6 @@ public class Enemy extends SpaceObject{
     }
 
     boolean outOfScreen(){
-        return true;
+        return y < -height/2;
     }
 }

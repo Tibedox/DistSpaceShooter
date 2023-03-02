@@ -15,6 +15,6 @@ public class Stars extends SpaceObject{
     }
 
     boolean outOfScreen(){
-        return y<-SCR_HEIGHT/2;
+        return y < -SCR_HEIGHT/2;
     }
 }
