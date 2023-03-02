@@ -14,4 +14,8 @@ public class Shot extends SpaceObject{
     boolean outOfScreen(){
         return y > SCR_HEIGHT + height/2;
     }
+
+    boolean overlap(Enemy enemy) {
+        return width/2+enemy.width/3 > Math.abs(x-enemy.x) && height/2+enemy.height/3 > Math.abs(y-enemy.y);
+    }
 }

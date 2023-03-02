@@ -23,6 +23,7 @@ public class ScreenGame implements Screen {
     Texture imgEnemy;
     Texture imgShot;
     Sound sndShot;
+    Sound sndExplosion;
 
     Stars[] stars = new Stars[2];
     Ship ship;
@@ -43,6 +44,7 @@ public class ScreenGame implements Screen {
         imgEnemy = new Texture("enemy.png");
         imgShot = new Texture("shot.png");
         sndShot = Gdx.audio.newSound(Gdx.files.internal("blaster.wav"));
+        sndExplosion = Gdx.audio.newSound(Gdx.files.internal("explosion.wav"));
 
         stars[0] = new Stars(SCR_WIDTH/2f, SCR_HEIGHT/2f, SCR_WIDTH, SCR_HEIGHT);
         stars[1] = new Stars(SCR_WIDTH/2f, SCR_HEIGHT*3f/2, SCR_WIDTH, SCR_HEIGHT);
@@ -83,6 +85,14 @@ public class ScreenGame implements Screen {
             if(shots.get(i).outOfScreen()) {
                 shots.remove(i);
             }
+            for (int j = enemies.size()-1; j >= 0; j--) {
+                if(shots.get(i).overlap(enemies.get(j))){
+                    shots.remove(i);
+                    enemies.remove(j);
+                    if(gg.soundOn) sndExplosion.play();
+                    break;
+                }
+            }
         }
 
         // отрисовка графики
@@ -122,6 +132,7 @@ public class ScreenGame implements Screen {
         imgShip.dispose();
         imgShot.dispose();
         sndShot.dispose();
+        sndExplosion.dispose();
     }
 
     void spawnEnemyes(){
