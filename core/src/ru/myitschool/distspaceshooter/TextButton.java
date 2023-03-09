@@ -21,6 +21,8 @@ public class TextButton {
 
     public void setText(String text) {
         this.text = text;
+        GlyphLayout gl = new GlyphLayout(font, text);
+        width = gl.width;
     }
 
     boolean hit(float tx, float ty){

@@ -4,6 +4,7 @@ import static ru.myitschool.distspaceshooter.MyGG.SCR_HEIGHT;
 import static ru.myitschool.distspaceshooter.MyGG.SCR_WIDTH;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 
@@ -26,6 +27,7 @@ public class ScreenSettings implements Screen {
         imgBG = new Texture("bg/space02.jpg");
 
         keyboard = new InputKeyboard(SCR_WIDTH, SCR_HEIGHT/2f, 7);
+        loadSettings();
     }
 
     @Override
@@ -43,7 +45,7 @@ public class ScreenSettings implements Screen {
                 if(keyboard.endOfEdit(gg.touch.x, gg.touch.y)) {
                     enterPlayerName = false;
                     playerName = keyboard.getText();
-                    btnEnterName.text = "NAME: "+playerName;
+                    updateButtons();
                 }
             } else {
                 if (btnEnterName.hit(gg.touch.x, gg.touch.y)) {
@@ -51,11 +53,11 @@ public class ScreenSettings implements Screen {
                 }
                 if (btnSound.hit(gg.touch.x, gg.touch.y)) {
                     gg.soundOn = !gg.soundOn;
-                    btnSound.setText(gg.soundOn ? "SOUND ON" : "SOUND OFF");
+                    updateButtons();
                 }
                 if (btnMusic.hit(gg.touch.x, gg.touch.y)) {
                     gg.musicOn = !gg.musicOn;
-                    btnMusic.setText(gg.musicOn ? "MUSIC ON" : "MUSIC OFF");
+                    updateButtons();
                 }
                 if(btnClearTable.hit(gg.touch.x, gg.touch.y)){
                     btnClearTable.text = "RECORDS CLEARED";
@@ -102,12 +104,34 @@ public class ScreenSettings implements Screen {
 
     @Override
     public void hide() {
-
+        saveSettings();
     }
 
     @Override
     public void dispose() {
         imgBG.dispose();
         keyboard.dispose();
+    }
+
+    void saveSettings() {
+        Preferences pref = Gdx.app.getPreferences("settings");
+        pref.putString("name", playerName);
+        pref.putBoolean("sound", gg.soundOn);
+        pref.putBoolean("music", gg.musicOn);
+        pref.flush();
+    }
+
+    void loadSettings() {
+        Preferences pref = Gdx.app.getPreferences("settings");
+        if(pref.contains("name")) playerName = pref.getString("name");
+        if(pref.contains("sound")) gg.soundOn = pref.getBoolean("sound");
+        if(pref.contains("music")) gg.musicOn = pref.getBoolean("music");
+        updateButtons();
+    }
+
+    void updateButtons(){
+        btnEnterName.setText("NAME: "+playerName);
+        btnSound.setText(gg.soundOn ? "SOUND ON" : "SOUND OFF");
+        btnMusic.setText(gg.musicOn ? "MUSIC ON" : "MUSIC OFF");
     }
 }
