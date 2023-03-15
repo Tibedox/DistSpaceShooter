@@ -8,6 +8,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.ArrayList;
@@ -22,7 +23,8 @@ public class ScreenGame implements Screen {
     Texture imgShip;
     Texture imgEnemy;
     Texture imgShot;
-    Texture imgFragmentEnemy, imgFragmentShip;
+    Texture imgAtlasFragment, imgFragmentShip;
+    TextureRegion[] imgFragmentEnemy = new TextureRegion[4];
     Sound sndShot;
     Sound sndExplosion;
 
@@ -45,8 +47,11 @@ public class ScreenGame implements Screen {
         imgShip = new Texture("ship.png");
         imgEnemy = new Texture("enemy.png");
         imgShot = new Texture("shot.png");
-        imgFragmentEnemy = new Texture("fragmentenemy.png");
+        imgAtlasFragment = new Texture("atlasfragment.png");
         imgFragmentShip = new Texture("fragmentship.png");
+        for (int i = 0; i < imgFragmentEnemy.length; i++) {
+            imgFragmentEnemy[i] = new TextureRegion(imgAtlasFragment, i*200, 0, 200, 200);
+        }
         sndShot = Gdx.audio.newSound(Gdx.files.internal("blaster.wav"));
         sndExplosion = Gdx.audio.newSound(Gdx.files.internal("explosion.wav"));
 
@@ -112,7 +117,9 @@ public class ScreenGame implements Screen {
         gg.batch.setProjectionMatrix(gg.camera.combined);
         gg.batch.begin();
         for (Stars s: stars) gg.batch.draw(imgStars, s.scrX(), s.scrY(), s.width, s.height);
-        for (Fragment f: fragments) gg.batch.draw(imgFragmentEnemy, f.scrX(), f.scrY(), f.width, f.height);
+
+        for (Fragment f: fragments) gg.batch.draw(f.img, f.scrX(), f.scrY(), f.width/2, f.height/2, f.width, f.height, 1, 1, f.angle);
+
         for (Enemy e: enemies) gg.batch.draw(imgEnemy, e.scrX(), e.scrY(), e.width, e.height);
         for (Shot s: shots) gg.batch.draw(imgShot, s.scrX(), s.scrY(), s.width, s.height);
         gg.batch.draw(imgShip, ship.scrX(), ship.scrY(), ship.width, ship.height);
@@ -144,7 +151,7 @@ public class ScreenGame implements Screen {
         imgStars.dispose();
         imgShip.dispose();
         imgShot.dispose();
-        imgFragmentEnemy.dispose();
+        imgAtlasFragment.dispose();
         imgFragmentShip.dispose();
         sndShot.dispose();
         sndExplosion.dispose();
@@ -166,8 +173,8 @@ public class ScreenGame implements Screen {
     }
 
     void spawnFragments(float x, float y){
-        for (int i = 0; i < 1250; i++) {
-            fragments.add(new Fragment(x, y));
+        for (int i = 0; i < 50; i++) {
+            fragments.add(new Fragment(imgFragmentEnemy, x, y));
         }
     }
 }
