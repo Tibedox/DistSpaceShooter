@@ -37,6 +37,8 @@ public class ScreenGame implements Screen {
     long timeEnemyLastSpawn, timeEnemySpawnInterval = 1100;
     long timeShotLastSpawn, timeShotSpawnInterval = 500;
 
+    int kills;
+
     public ScreenGame(MyGG myGG){
         gg = myGG;
 
@@ -86,9 +88,14 @@ public class ScreenGame implements Screen {
             enemies.get(i).move();
             if(enemies.get(i).outOfScreen()) {
                 enemies.remove(i);
+                if(ship.visible) {
+                    spawnFragments(ship.x, ship.y);
+                    ship.kill();
+                    if (gg.soundOn) sndExplosion.play();
+                }
             }
         }
-        spawnShots();
+        if(ship.visible) spawnShots();
         for (int i = shots.size()-1; i >= 0; i--) {
             shots.get(i).move();
             if(shots.get(i).outOfScreen()) {
@@ -100,6 +107,7 @@ public class ScreenGame implements Screen {
                     spawnFragments(enemies.get(j).x, enemies.get(j).y);
                     shots.remove(i);
                     enemies.remove(j);
+                    kills++;
                     if(gg.soundOn) sndExplosion.play();
                     break;
                 }
@@ -117,12 +125,11 @@ public class ScreenGame implements Screen {
         gg.batch.setProjectionMatrix(gg.camera.combined);
         gg.batch.begin();
         for (Stars s: stars) gg.batch.draw(imgStars, s.scrX(), s.scrY(), s.width, s.height);
-
         for (Fragment f: fragments) gg.batch.draw(f.img, f.scrX(), f.scrY(), f.width/2, f.height/2, f.width, f.height, 1, 1, f.angle);
-
         for (Enemy e: enemies) gg.batch.draw(imgEnemy, e.scrX(), e.scrY(), e.width, e.height);
         for (Shot s: shots) gg.batch.draw(imgShot, s.scrX(), s.scrY(), s.width, s.height);
-        gg.batch.draw(imgShip, ship.scrX(), ship.scrY(), ship.width, ship.height);
+        if(ship.visible) gg.batch.draw(imgShip, ship.scrX(), ship.scrY(), ship.width, ship.height);
+        gg.fontSmall.draw(gg.batch, "KILLS: "+kills, 10, SCR_HEIGHT-10);
         gg.batch.end();
     }
 
