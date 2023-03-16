@@ -14,7 +14,7 @@ public class Fragment extends SpaceObject{
 
     public Fragment(TextureRegion[] imgs, float x, float y) {
         super(x, y, MathUtils.random(5, 40), MathUtils.random(5, 40));
-        float v = MathUtils.random(0.1f, 8);
+        float v = MathUtils.random(1f, 8);
         float a = MathUtils.random(0f, 360);
         vx = v*MathUtils.sin(a);
         vy = v*MathUtils.cos(a);
